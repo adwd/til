@@ -1,0 +1,31 @@
+{
+  "name": "with-typescript",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "download-schema": "apollo-codegen introspect-schema https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn --output ./schema.json",
+    "codegen": "apollo-codegen generate ./**/queries.ts --addTypename --schema ./schema.json --target typescript --output ./generated/types.ts"
+  },
+  "dependencies": {
+    "@zeit/next-typescript": "1.1.0",
+    "apollo-boost": "^0.1.10",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
+    "isomorphic-unfetch": "^2.0.0",
+    "next": "^6.1.1",
+    "react": "^16.4.1",
+    "react-apollo": "^2.1.9",
+    "react-dom": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/next": "6.0.4",
+    "@types/react": "^16.4.6",
+    "apollo": "^1.4.0",
+    "apollo-codegen": "^0.20.2",
+    "fork-ts-checker-webpack-plugin": "^0.4.3",
+    "typescript": "^2.9.2"
+  },
+  "license": "ISC"
+}
