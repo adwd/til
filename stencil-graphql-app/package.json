@@ -1,0 +1,43 @@
+{
+  "name": "stencil-graphql-app",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Stencil GraphQL App",
+  "scripts": {
+    "build": "stencil build --prerender",
+    "start": "stencil build --dev --watch --serve",
+    "test": "jest",
+    "test.watch": "jest --watch",
+    "schema": "apollo-codegen introspect-schema https://us1.prisma.sh/masahiro-nishida-fb20bf/todo-app/dev --output ./src/schema.json",
+    "types": "apollo-codegen generate ./src/graphql/*.ts --addTypename --schema ./src/schema.json --target typescript --output ./src/graphql/generated-types.ts"
+  },
+  "dependencies": {
+    "@stencil/core": "^0.10.0",
+    "@stencil/router": "^0.2.2",
+    "apollo-cache-inmemory": "^1.2.6",
+    "apollo-client": "^2.3.7",
+    "apollo-link": "^1.2.2",
+    "apollo-link-http": "^1.5.4",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^21.1.1",
+    "apollo-codegen": "^0.20.2",
+    "jest": "^21.2.1"
+  },
+  "license": "MIT",
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  }
+}
