@@ -1,11 +1,11 @@
-import Link from 'next/link'
-import PostList from '../components/PostList'
+import Link from 'next/link';
+import PostList from '../components/PostList';
 
-export default () =>
+export default () => (
   <div>
-    Hello World.{' '}
-    <PostList />
+    Hello World. <PostList />
     <Link href="/about">
       <a>About</a>
     </Link>
   </div>
+);

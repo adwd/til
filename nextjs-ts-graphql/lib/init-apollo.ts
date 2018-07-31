@@ -1,14 +1,14 @@
-import { ApolloClient } from 'apollo-boost'
-import { HttpLink } from 'apollo-boost'
-import { InMemoryCache } from 'apollo-boost'
-import fetch from 'isomorphic-unfetch'
-import { isBrowser } from './utls'
+import { ApolloClient } from 'apollo-boost';
+import { HttpLink } from 'apollo-boost';
+import { InMemoryCache } from 'apollo-boost';
+import fetch from 'isomorphic-unfetch';
+import { isBrowser } from './utls';
 
-let apolloClient = null
+let apolloClient = null;
 
 // Polyfill fetch() on the server (used by apollo-client)
 if (!isBrowser) {
-  (global as any).fetch = fetch
+  (global as any).fetch = fetch;
 }
 
 function create<T>(initialState: T): ApolloClient<T> {
@@ -18,23 +18,23 @@ function create<T>(initialState: T): ApolloClient<T> {
     ssrMode: !isBrowser, // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
       uri: 'https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn', // Server URL (must be absolute)
-      credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
+      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
-    cache: new InMemoryCache().restore(initialState as any) as any
-  })
+    cache: new InMemoryCache().restore(initialState as any) as any,
+  });
 }
 
 export default function initApollo<T>(initialState: T) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!isBrowser) {
-    return create(initialState)
+    return create(initialState);
   }
 
   // Reuse client on the client-side
   if (!apolloClient) {
-    apolloClient = create(initialState)
+    apolloClient = create(initialState);
   }
 
-  return apolloClient
+  return apolloClient;
 }
