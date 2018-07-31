@@ -15,10 +15,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "types": [
-      "./types.d.ts"
+      "./node_modules/@types",
+      "./types"
     ],
     "lib": [
       "dom",

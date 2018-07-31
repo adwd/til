@@ -2,9 +2,10 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
+    "dev": "nodemon server/index.ts",
+    "build": "next build && tsc --project tsconfig.server.json && cp -r static .next",
+    "start": "NODE_ENV=production node .next/production-server/index.js",
+    "prettier": "prettier --write \"{components,lib,pages,server,static,types}/**/*.{ts,tsx}\"",
     "download-schema": "apollo-codegen introspect-schema https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn --output ./schema.json",
     "codegen": "apollo-codegen generate ./**/queries.ts --addTypename --schema ./schema.json --target typescript --output ./generated/types.ts"
   },
@@ -25,6 +26,9 @@
     "apollo": "^1.4.0",
     "apollo-codegen": "^0.20.2",
     "fork-ts-checker-webpack-plugin": "^0.4.3",
+    "nodemon": "^1.18.3",
+    "prettier": "^1.14.0",
+    "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   },
   "license": "ISC"
