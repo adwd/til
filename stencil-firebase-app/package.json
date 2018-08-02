@@ -1,0 +1,39 @@
+{
+  "name": "stencil-firebase-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "stencil build --prerender",
+    "dev": "stencil build --dev --watch --serve",
+    "test": "jest",
+    "test.watch": "jest --watch",
+    "deploy": "npm run build && firebase deploy"
+  },
+  "dependencies": {
+    "@stencil/core": "^0.11.0",
+    "@stencil/router": "^0.2.5",
+    "firebase": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "jest": "^23.4.2",
+    "rollup-plugin-replace": "^2.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
