@@ -8,7 +8,7 @@
     "dev": "stencil build --dev --watch --serve",
     "test": "jest",
     "test.watch": "jest --watch",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && cp ./src/index.html ./public/404.html && firebase deploy"
   },
   "dependencies": {
     "@stencil/core": "^0.11.0",
