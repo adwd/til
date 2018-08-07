@@ -101,6 +101,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppProfiles {
+
+    }
+  }
+
+  interface HTMLAppProfilesElement extends StencilComponents.AppProfiles, HTMLStencilElement {}
+
+  var HTMLAppProfilesElement: {
+    prototype: HTMLAppProfilesElement;
+    new (): HTMLAppProfilesElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-profiles': HTMLAppProfilesElement;
+  }
+  interface ElementTagNameMap {
+    'app-profiles': HTMLAppProfilesElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-profiles': JSXElements.AppProfilesAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppProfilesAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppRoot {
 
     }
