@@ -130,4 +130,37 @@ declare global {
   }
 }
 
+
+declare global {
+
+  namespace StencilComponents {
+    interface NotFound {
+
+    }
+  }
+
+  interface HTMLNotFoundElement extends StencilComponents.NotFound, HTMLStencilElement {}
+
+  var HTMLNotFoundElement: {
+    prototype: HTMLNotFoundElement;
+    new (): HTMLNotFoundElement;
+  };
+  interface HTMLElementTagNameMap {
+    'not-found': HTMLNotFoundElement;
+  }
+  interface ElementTagNameMap {
+    'not-found': HTMLNotFoundElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'not-found': JSXElements.NotFoundAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface NotFoundAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
 declare global { namespace JSX { interface StencilJSX {} } }
