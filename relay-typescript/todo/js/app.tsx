@@ -24,14 +24,18 @@ import {
   Network,
   RecordSource,
   Store,
+  RequestNode,
+  Variables,
+  ObservableFromValue,
+  QueryPayload,
 } from 'relay-runtime';
 
 import TodoApp from './components/TodoApp';
 
 function fetchQuery(
-  operation,
-  variables,
-) {
+  operation: RequestNode,
+  variables: Variables,
+): ObservableFromValue<QueryPayload> {
   return fetch('/graphql', {
     method: 'POST',
     headers: {

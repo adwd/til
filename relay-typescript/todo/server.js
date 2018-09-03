@@ -24,16 +24,27 @@ const compiler = webpack({
   mode: 'development',
   entry: [
     'whatwg-fetch',
-    path.resolve(__dirname, 'js', 'app.js')
+    path.resolve(__dirname, 'js', 'app.tsx')
   ],
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },  
   module: {
     rules: [
+      // {
+      //   test: /\.js$/,
+      //   exclude: /\/node_modules\//,
+      //   use: {
+      //     loader: 'babel-loader',
+      //   }
+      // },
       {
-        test: /\.js$/,
+        test: /\.(tsx?|js)$/,
         exclude: /\/node_modules\//,
-        use: {
-          loader: 'babel-loader',
-        }
+        use: [
+          { loader: 'babel-loader' },
+          { loader: 'ts-loader', options: { transpileOnly: true } },
+        ],
       }
     ]
   },
