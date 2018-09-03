@@ -19,14 +19,23 @@ import React from 'react';
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay';
 import classnames from 'classnames';
+import { Todo_todo } from '../__generated__/Todo_todo.graphql';
+import { Todo_viewer } from '../__generated__/Todo_viewer.graphql';
 
-class Todo extends React.Component {
+type Props = {
+  todo: Todo_todo;
+  viewer: Todo_viewer;
+  relay: RelayProp;
+}
+
+class Todo extends React.Component<Props> {
   state = {
     isEditing: false,
   };
-  _handleCompleteChange = (e) => {
+  _handleCompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const complete = e.target.checked;
     ChangeTodoStatusMutation.commit(
       this.props.relay.environment,
@@ -48,7 +57,7 @@ class Todo extends React.Component {
     this._setEditMode(false);
     this._removeTodo();
   };
-  _handleTextInputSave = (text) => {
+  _handleTextInputSave = (text: any) => {
     this._setEditMode(false);
     RenameTodoMutation.commit(
       this.props.relay.environment,
@@ -63,7 +72,7 @@ class Todo extends React.Component {
       this.props.viewer,
     );
   }
-  _setEditMode = (shouldEdit) => {
+  _setEditMode = (shouldEdit: any) => {
     this.setState({isEditing: shouldEdit});
   };
   renderTextInput() {
@@ -71,7 +80,7 @@ class Todo extends React.Component {
       <TodoTextInput
         className="edit"
         commitOnBlur={true}
-        initialValue={this.props.todo.text}
+        initialValue={this.props.todo.text!}
         onCancel={this._handleTextInputCancel}
         onDelete={this._handleTextInputDelete}
         onSave={this._handleTextInputSave}
@@ -87,7 +96,7 @@ class Todo extends React.Component {
         })}>
         <div className="view">
           <input
-            checked={this.props.todo.complete}
+            checked={this.props.todo.complete!}
             className="toggle"
             onChange={this._handleCompleteChange}
             type="checkbox"

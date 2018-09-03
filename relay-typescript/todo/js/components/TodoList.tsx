@@ -17,10 +17,17 @@ import React from 'react';
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay';
+import { TodoList_viewer } from '../__generated__/TodoList_viewer.graphql';
 
-class TodoList extends React.Component {
-  _handleMarkAllChange = (e) => {
+type Props = {
+  viewer: TodoList_viewer;
+  relay: RelayProp;
+}
+
+class TodoList extends React.Component<Props> {
+  _handleMarkAllChange = (e: any) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
       this.props.relay.environment,
@@ -30,7 +37,7 @@ class TodoList extends React.Component {
     );
   };
   renderTodos() {
-    return this.props.viewer.todos.edges.map(edge =>
+    return this.props.viewer.todos!.edges!.map((edge: any) =>
       <Todo
         key={edge.node.id}
         todo={edge.node}

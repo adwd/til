@@ -14,51 +14,44 @@ import {
   commitMutation,
   graphql,
 } from 'react-relay';
-import {ConnectionHandler} from 'relay-runtime';
+import { Environment } from 'relay-runtime';
+import { Todo_todo } from '../__generated__/Todo_todo.graphql';
 
 const mutation = graphql`
-  mutation RemoveTodoMutation($input: RemoveTodoInput!) {
-    removeTodo(input: $input) {
-      deletedTodoId,
-      viewer {
-        completedCount,
-        totalCount,
-      },
+  mutation RenameTodoMutation($input: RenameTodoInput!) {
+    renameTodo(input:$input) {
+      todo {
+        id
+        text
+      }
     }
   }
 `;
 
-function sharedUpdater(store, user, deletedID) {
-  const userProxy = store.get(user.id);
-  const conn = ConnectionHandler.getConnection(
-    userProxy,
-    'TodoList_todos',
-  );
-  ConnectionHandler.deleteNode(
-    conn,
-    deletedID,
-  );
+function getOptimisticResponse(text: string, todo: Todo_todo) {
+  return {
+    renameTodo: {
+      todo: {
+        id: todo.id,
+        text: text,
+      },
+    },
+  };
 }
 
 function commit(
-  environment,
-  todo,
-  user,
+  environment: Environment,
+  text: string,
+  todo: Todo_todo,
 ) {
   return commitMutation(
     environment,
     {
       mutation,
       variables: {
-        input: {id: todo.id},
+        input: {text, id: todo.id},
       },
-      updater: (store) => {
-        const payload = store.getRootField('removeTodo');
-        sharedUpdater(store, user, payload.getValue('deletedTodoId'));
-      },
-      optimisticUpdater: (store) => {
-        sharedUpdater(store, user, todo.id);
-      },
+      optimisticResponse: getOptimisticResponse(text, todo),
     }
   );
 }

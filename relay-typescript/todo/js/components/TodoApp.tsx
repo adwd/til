@@ -19,10 +19,17 @@ import React from 'react';
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay';
+import { TodoApp_viewer } from '../__generated__/TodoApp_viewer.graphql';
 
-class TodoApp extends React.Component {
-  _handleTextInputSave = (text) => {
+type Props = {
+  viewer: TodoApp_viewer;
+  relay: RelayProp;
+};
+
+class TodoApp extends React.Component<Props> {
+  _handleTextInputSave = (text: any) => {
     AddTodoMutation.commit(
       this.props.relay.environment,
       text,
@@ -30,7 +37,7 @@ class TodoApp extends React.Component {
     );
   };
   render() {
-    const hasTodos = this.props.viewer.totalCount > 0;
+    const hasTodos = this.props.viewer.totalCount! > 0;
     return (
       <div>
         <section className="todoapp">
@@ -39,7 +46,6 @@ class TodoApp extends React.Component {
               todos
             </h1>
             <TodoTextInput
-              autoFocus={true}
               className="new-todo"
               onSave={this._handleTextInputSave}
               placeholder="What needs to be done?"
@@ -48,7 +54,7 @@ class TodoApp extends React.Component {
           <TodoList viewer={this.props.viewer} />
           {hasTodos &&
             <TodoListFooter
-              todos={this.props.viewer.todos}
+              // todos={this.props.viewer.todos}
               viewer={this.props.viewer}
             />
           }

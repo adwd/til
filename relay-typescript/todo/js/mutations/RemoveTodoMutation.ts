@@ -14,12 +14,14 @@ import {
   commitMutation,
   graphql,
 } from 'react-relay';
-import {ConnectionHandler} from 'relay-runtime';
+import {ConnectionHandler, Environment, RecordSourceSelectorProxy} from 'relay-runtime';
+import { Todo_todo } from '../__generated__/Todo_todo.graphql';
+import { Todo_viewer } from '../__generated__/Todo_viewer.graphql';
 
 const mutation = graphql`
-  mutation RemoveCompletedTodosMutation($input: RemoveCompletedTodosInput!) {
-    removeCompletedTodos(input: $input) {
-      deletedTodoIds,
+  mutation RemoveTodoMutation($input: RemoveTodoInput!) {
+    removeTodo(input: $input) {
+      deletedTodoId,
       viewer {
         completedCount,
         totalCount,
@@ -28,40 +30,36 @@ const mutation = graphql`
   }
 `;
 
-function sharedUpdater(store, user, deletedIDs) {
+function sharedUpdater(store: RecordSourceSelectorProxy, user: Todo_viewer, deletedID: string) {
   const userProxy = store.get(user.id);
   const conn = ConnectionHandler.getConnection(
     userProxy,
     'TodoList_todos',
   );
-  deletedIDs.forEach((deletedID) =>
-    ConnectionHandler.deleteNode(conn, deletedID)
+  ConnectionHandler.deleteNode(
+    conn,
+    deletedID,
   );
 }
 
 function commit(
-  environment,
-  todos,
-  user,
+  environment: Environment,
+  todo: Todo_todo,
+  user: Todo_viewer,
 ) {
   return commitMutation(
     environment,
     {
       mutation,
       variables: {
-        input: {},
+        input: {id: todo.id},
       },
       updater: (store) => {
-        const payload = store.getRootField('removeCompletedTodos');
-        sharedUpdater(store, user, payload.getValue('deletedTodoIds'));
+        const payload = store.getRootField('removeTodo');
+        sharedUpdater(store, user, payload!.getValue('deletedTodoId'));
       },
       optimisticUpdater: (store) => {
-        if (todos && todos.edges) {
-          const deletedIDs = todos.edges
-            .filter(edge => edge.node.complete)
-            .map(edge => edge.node.id);
-          sharedUpdater(store, user, deletedIDs);
-        }
+        sharedUpdater(store, user, todo.id);
       },
     }
   );

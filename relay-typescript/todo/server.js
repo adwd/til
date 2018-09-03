@@ -39,11 +39,11 @@ const compiler = webpack({
       //   }
       // },
       {
-        test: /\.(tsx?|js)$/,
+        test: /\.tsx?$/,
         exclude: /\/node_modules\//,
         use: [
           { loader: 'babel-loader' },
-          { loader: 'ts-loader', options: { transpileOnly: true } },
+          { loader: 'ts-loader' },
         ],
       }
     ]

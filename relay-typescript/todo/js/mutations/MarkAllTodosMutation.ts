@@ -14,6 +14,8 @@ import {
   commitMutation,
   graphql,
 } from 'react-relay';
+import { Environment } from 'relay-runtime';
+import { TodoList_viewer } from '../__generated__/TodoList_viewer.graphql';
 
 const mutation = graphql`
   mutation MarkAllTodosMutation($input: MarkAllTodosInput!) {
@@ -30,14 +32,17 @@ const mutation = graphql`
   }
 `;
 
-function getOptimisticResponse(complete, todos, user) {
-  const payload = {viewer: {id: user.id}};
+function getOptimisticResponse(complete: boolean, todos: TodoList_viewer["todos"], user: TodoList_viewer) {
+  const payload = {
+    viewer: { id: user.id, completedCount: 0 },
+    changedTodos: [] as Array<{ complete: boolean, id: string }>,
+  };
   if (todos && todos.edges) {
     payload.changedTodos = todos.edges
-      .filter(edge => edge.node.complete !== complete)
+      .filter(edge => edge!.node!.complete !== complete)
       .map(edge => ({
         complete: complete,
-        id: edge.node.id,
+        id: edge!.node!.id,
       }));
   }
   if (user.totalCount != null) {
@@ -51,10 +56,10 @@ function getOptimisticResponse(complete, todos, user) {
 }
 
 function commit(
-  environment,
-  complete,
-  todos,
-  user,
+  environment: Environment,
+  complete: boolean,
+  todos: TodoList_viewer["todos"],
+  user: TodoList_viewer,
 ) {
   return commitMutation(
     environment,
