@@ -22,6 +22,7 @@ module.exports = {
         fieldName: `swapi`,
         url: `https://api.graphcms.com/simple/v1/swapi`,
         typeName: `SWAPI`,
+        refetchInterval: 60,
       },
     },
     'gatsby-plugin-offline',
