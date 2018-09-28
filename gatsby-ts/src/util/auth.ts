@@ -1,13 +1,22 @@
 import auth0 from 'auth0-js'
 
+const isBrowser = typeof window !== 'undefined'
+
 export class Auth {
-  webAuth = new auth0.WebAuth({
-    domain: process.env.AUTH_DOMAIN,
-    clientID: process.env.AUTH_CLIENT_ID,
-    redirectUri: process.env.AUTH_CALLBACK_URL,
-    responseType: 'token id_token',
-    scope: 'openid',
-  })
+  webAuth = isBrowser
+    ? new auth0.WebAuth({
+        domain: process.env.AUTH_DOMAIN,
+        clientID: process.env.AUTH_CLIENT_ID,
+        redirectUri: process.env.AUTH_CALLBACK_URL,
+        responseType: 'token id_token',
+        scope: 'openid',
+      })
+    : {
+        authorize: () => {},
+        parseHash: (
+          callback: auth0.Auth0Callback<auth0.Auth0DecodedHash>
+        ) => {},
+      }
 
   login = () => {
     this.webAuth.authorize()
@@ -31,6 +40,10 @@ export class Auth {
   }
 
   setSession: (a: auth0.Auth0DecodedHash) => void = authResult => {
+    if (!isBrowser) {
+      return
+    }
+
     // Set the time that the access token will expire at
     const expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
@@ -43,6 +56,10 @@ export class Auth {
   }
 
   logout = () => {
+    if (!isBrowser) {
+      return
+    }
+
     // Clear access token and ID token from local storage
     localStorage.removeItem('access_token')
     localStorage.removeItem('id_token')
@@ -51,12 +68,14 @@ export class Auth {
     // history.replace('/home');
   }
 
-  isAuthenticated = () => {
+  isAuthenticated: () => boolean = () => {
+    if (!isBrowser) {
+      return false
+    }
+
     // Check whether the current time is past the
     // access token's expiry time
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
     return new Date().getTime() < expiresAt
   }
 }
-
-export const auth = new Auth()
