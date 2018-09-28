@@ -1,0 +1,87 @@
+{
+  "name": "gatsby-starter-default",
+  "description": "Gatsby default starter",
+  "version": "1.0.0",
+  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "dependencies": {
+    "gatsby": "^2.0.0",
+    "gatsby-plugin-manifest": "^2.0.2",
+    "gatsby-plugin-offline": "^2.0.5",
+    "gatsby-plugin-react-helmet": "^3.0.0",
+    "gatsby-source-graphql": "^2.0.2",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
+    "react-helmet": "^5.2.0"
+  },
+  "keywords": [
+    "gatsby"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "serve": "gatsby serve",
+    "format": "prettier --write '**/*.{js,ts,tsx}'",
+    "codegen": "npm run codegen:gatsby && npm run codegen:swapi",
+    "codegen:gatsby": "gql-gen --schema http://localhost:8000/___graphql --template graphql-codegen-typescript-template --out ./src/generated/gatsby-types.ts './src/**/*.tsx'",
+    "codegen:swapi": "gql-gen --schema https://api.graphcms.com/simple/v1/swapi --template graphql-codegen-typescript-template --out ./src/generated/swapi-types.ts './graphql-fake-queries/*.{ts,tsx}'",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@types/graphql": "^14.0.1",
+    "@types/jest": "^23.3.2",
+    "@types/react-test-renderer": "^16.0.2",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "gatsby-plugin-typescript": "^2.0.0",
+    "graphql-code-generator": "^0.12.6",
+    "graphql-codegen-typescript-template": "^0.12.6",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.2",
+    "react-test-renderer": "^16.5.2",
+    "ts-jest": "^23.10.2",
+    "typescript": "^3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.jsx?$": "<rootDir>/jest-preprocess.js"
+    },
+    "testRegex": "(/__tests__/.*\\.([tj]sx?)|(\\.|/)(test|spec))\\.([tj]sx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testPathIgnorePatterns": [
+      "node_modules",
+      ".cache"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(gatsby)/)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.test.json"
+      },
+      "__PATH_PREFIX__": ""
+    },
+    "testURL": "http://localhost",
+    "setupFiles": [
+      "<rootDir>/loadershim.js"
+    ]
+  }
+}
