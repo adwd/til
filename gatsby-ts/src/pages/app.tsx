@@ -3,12 +3,13 @@ import { Router, RouteComponentProps } from '@reach/router'
 import { Link, navigate } from 'gatsby'
 import { Auth } from '../util/auth'
 import PrivateRoute from '../components/private-route'
+import Layout from '../components/layout'
 
 class App extends React.Component {
   auth = new Auth()
   render() {
     return (
-      <>
+      <Layout>
         <Router>
           <Index path="/app" auth={this.auth} />
           <Login path="/app/login" auth={this.auth} />
@@ -16,7 +17,7 @@ class App extends React.Component {
           <PrivateRoute component={Home} path="/app/home" auth={this.auth} />
         </Router>
         <Link to="/">Go back to the homepage</Link>
-      </>
+      </Layout>
     )
   }
 }
@@ -32,7 +33,6 @@ class Index extends React.Component<RouteComponentProps & { auth: Auth }> {
   }
 
   render() {
-    console.log(this.props.auth)
     return (
       <>
         <div>app</div>

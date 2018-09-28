@@ -3,20 +3,22 @@ import auth0 from 'auth0-js'
 const isBrowser = typeof window !== 'undefined'
 
 export class Auth {
-  webAuth = isBrowser
+  webAuth: auth0.WebAuth = isBrowser
     ? new auth0.WebAuth({
         domain: process.env.AUTH_DOMAIN,
         clientID: process.env.AUTH_CLIENT_ID,
-        redirectUri: process.env.AUTH_CALLBACK_URL,
+        redirectUri: isBrowser
+          ? window.location.origin + '/app/callback'
+          : process.env.AUTH_CALLBACK_URL,
         responseType: 'token id_token',
         scope: 'openid',
       })
-    : {
+    : ({
         authorize: () => {},
         parseHash: (
           callback: auth0.Auth0Callback<auth0.Auth0DecodedHash>
         ) => {},
-      }
+      } as auth0.WebAuth)
 
   login = () => {
     this.webAuth.authorize()

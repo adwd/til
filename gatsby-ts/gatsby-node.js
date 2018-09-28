@@ -6,7 +6,21 @@
 
 // You can delete this file if you're not using it
 
-exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+exports.onCreateWebpackConfig = ({ stage, loaders, actions, plugins }) => {
+  actions.setWebpackConfig({
+    plugins: [
+      plugins.define({
+        'process.env.AUTH_DOMAIN': JSON.stringify(process.env.AUTH_DOMAIN),
+        'process.env.AUTH_CLIENT_ID': JSON.stringify(
+          process.env.AUTH_CLIENT_ID
+        ),
+        'process.env.AUTH_CALLBACK_URL': JSON.stringify(
+          process.env.AUTH_CALLBACK_URL
+        ),
+      }),
+    ],
+  })
+
   if (stage === 'build-html') {
     /*
      * During the build step, `auth0-js` will break because it relies on
