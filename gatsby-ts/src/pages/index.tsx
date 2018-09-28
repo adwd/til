@@ -13,8 +13,10 @@ class IndexPage extends React.Component {
         <p>Now go build something great.</p>
         <Link to="/page-2/">Go to page 2</Link>
         <div>
-          <p>see posts</p>
           <Link to="/posts/">Go to posts</Link>
+        </div>
+        <div>
+          <Link to="/app/">App</Link>
         </div>
       </Layout>
     )
