@@ -1,6 +1,7 @@
 import React from 'react'
 import { graphql, Link } from 'gatsby'
 import { Starship } from '../generated/swapi-types'
+import Layout from '../components/layout'
 
 interface Props {
   data: {
@@ -12,7 +13,7 @@ class Posts extends React.Component<Props> {
   render() {
     const { Starship } = this.props.data.swapi
     return (
-      <div>
+      <Layout>
         <h1>{Starship.name}</h1>
         <p>hyper drive rating: {Starship.hyperdriveRating}</p>
         <h3>pilots</h3>
@@ -26,7 +27,7 @@ class Posts extends React.Component<Props> {
           ))}
         </ul>
         <Link to="/">Go back to the homepage</Link>
-      </div>
+      </Layout>
     )
   }
 }
