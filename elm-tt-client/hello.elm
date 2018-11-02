@@ -7,11 +7,30 @@ import Html.Events exposing (..)
 
 main : Program Never Model Msg
 main =
-    Html.beginnerProgram
-        { model = { message = "" }
+    Html.program
+        { init = init
         , update = update
+        , subscriptions = subscriptions
         , view = view
         }
+
+
+
+-- INIT
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( { message = "" }, Cmd.none )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
 
@@ -32,17 +51,17 @@ type Msg
     | SayBye
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SayHello greeted ->
-            { model | message = "hello" ++ greeted }
+            ( { model | message = "hello" ++ greeted }, Cmd.none )
 
         Shutup ->
-            { model | message = "" }
+            ( { model | message = "" }, Cmd.none )
 
         SayBye ->
-            { model | message = "bye" }
+            ( { model | message = "bye" }, Cmd.none )
 
 
 
