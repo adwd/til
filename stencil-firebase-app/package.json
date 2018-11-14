@@ -5,20 +5,24 @@
   "main": "index.js",
   "scripts": {
     "build": "stencil build --prerender",
-    "dev": "stencil build --dev --watch --serve",
-    "test": "jest",
-    "test.watch": "jest --watch",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watchAll",
     "deploy": "npm run build && cp ./src/index.html ./public/404.html && firebase deploy"
   },
   "dependencies": {
-    "@stencil/core": "^0.11.0",
-    "@stencil/router": "^0.2.5",
+    "@stencil/core": "^0.15.2",
+    "@stencil/router": "^0.3.1",
     "firebase": "^5.3.0"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.1",
-    "jest": "^23.4.2",
-    "rollup-plugin-replace": "^2.0.0"
+    "@types/jest": "23.3.9",
+    "@types/puppeteer": "1.10.0",
+    "jest": "23.6.0",
+    "jest-cli": "23.6.0",
+    "puppeteer": "1.8.0",
+    "rollup-plugin-replace": "^2.0.0",
+    "workbox-build": "3.4.1"
   },
   "jest": {
     "transform": {
