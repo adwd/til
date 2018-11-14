@@ -61,7 +61,7 @@ function commit(
       variables: {
         input: {
           text,
-          clientMutationId: tempID++,
+          clientMutationId: String(tempID++),
         },
       },
       updater: (store) => {
