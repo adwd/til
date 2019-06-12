@@ -1,5 +1,5 @@
-use std::cmp::Ordering;
 use super::SortOrder;
+use std::cmp::Ordering;
 
 pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
     match *order {
@@ -9,18 +9,23 @@ pub fn sort<T: Ord>(x: &mut [T], order: &SortOrder) -> Result<(), String> {
 }
 
 pub fn sort_by<T, F>(x: &mut [T], comparator: &F) -> Result<(), String>
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len().is_power_of_two() {
         do_sort(x, true, comparator);
         Ok(())
     } else {
-        Err(format!("The length of x is not a power of two. (x.len(): {})", x.len()))
+        Err(format!(
+            "The length of x is not a power of two. (x.len(): {})",
+            x.len()
+        ))
     }
 }
 
 fn do_sort<T, F>(x: &mut [T], forward: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len() == 1 {
         return;
@@ -33,7 +38,8 @@ fn do_sort<T, F>(x: &mut [T], forward: bool, comparator: &F)
 }
 
 fn sub_sort<T, F>(x: &mut [T], forward: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     if x.len() == 1 {
         return;
@@ -46,14 +52,14 @@ fn sub_sort<T, F>(x: &mut [T], forward: bool, comparator: &F)
 }
 
 fn compare_and_swap<T, F>(x: &mut [T], forward: bool, comparator: &F)
-    where F: Fn(&T, &T) -> Ordering
+where
+    F: Fn(&T, &T) -> Ordering,
 {
     let swap_condition = if forward {
         Ordering::Greater
     } else {
         Ordering::Less
     };
-    
     let mid_point = x.len() / 2;
     for i in 0..mid_point {
         if comparator(&x[i], &x[mid_point + i]) == swap_condition {
@@ -95,7 +101,7 @@ mod tests {
     }
 
     impl Student {
-        fn new(first_name: &str, last_name: & str, age: u8) -> Self {
+        fn new(first_name: &str, last_name: &str, age: u8) -> Self {
             Self {
                 first_name: first_name.to_string(),
                 last_name: last_name.to_string(),
@@ -131,7 +137,13 @@ mod tests {
 
         let expected = vec![&ryosuke, &kyoko, &hanako, &taro];
 
-        assert_eq!(sort_by(&mut x, &|a, b| a.last_name.cmp(&b.last_name).then_with(|| a.first_name.cmp(&b.first_name))), Ok(()));
+        assert_eq!(
+            sort_by(&mut x, &|a, b| a
+                .last_name
+                .cmp(&b.last_name)
+                .then_with(|| a.first_name.cmp(&b.first_name))),
+            Ok(())
+        );
 
         assert_eq!(x, expected);
     }
