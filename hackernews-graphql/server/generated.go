@@ -12,6 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/adwd/til/hackernews-graphql/server/models"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -43,6 +44,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Query struct {
 		Stories func(childComplexity int) int
+		Story   func(childComplexity int, id int) int
 	}
 
 	Story struct {
@@ -59,7 +61,8 @@ type ComplexityRoot struct {
 }
 
 type QueryResolver interface {
-	Stories(ctx context.Context) ([]*Story, error)
+	Stories(ctx context.Context) ([]*models.Story, error)
+	Story(ctx context.Context, id int) (*models.Story, error)
 }
 
 type executableSchema struct {
@@ -83,6 +86,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Stories(childComplexity), true
+
+	case "Query.story":
+		if e.complexity.Query.Story == nil {
+			break
+		}
+
+		args, err := ec.field_Query_story_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Story(childComplexity, args["id"].(int)), true
 
 	case "Story.by":
 		if e.complexity.Story.By == nil {
@@ -210,6 +225,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 
 type Query {
   stories: [Story!]!
+  story(id: ID!): Story
 }
 `},
 )
@@ -229,6 +245,20 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_story_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -299,10 +329,51 @@ func (ec *executionContext) _Query_stories(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*Story)
+	res := resTmp.([]*models.Story)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚐStory(ctx, field.Selections, res)
+	return ec.marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_story(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_story_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Story(rctx, args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.Story)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -380,7 +451,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_by(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_by(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -417,7 +488,7 @@ func (ec *executionContext) _Story_by(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_descendants(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_descendants(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -448,13 +519,13 @@ func (ec *executionContext) _Story_descendants(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_id(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_id(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -485,13 +556,13 @@ func (ec *executionContext) _Story_id(ctx context.Context, field graphql.Collect
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_score(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_score(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -522,13 +593,13 @@ func (ec *executionContext) _Story_score(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_time(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_time(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -559,13 +630,13 @@ func (ec *executionContext) _Story_time(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_title(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_title(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -602,7 +673,7 @@ func (ec *executionContext) _Story_title(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_type(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_type(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -639,7 +710,7 @@ func (ec *executionContext) _Story_type(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_url(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_url(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -676,7 +747,7 @@ func (ec *executionContext) _Story_url(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Story_kids(ctx context.Context, field graphql.CollectedField, obj *Story) (ret graphql.Marshaler) {
+func (ec *executionContext) _Story_kids(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -707,10 +778,10 @@ func (ec *executionContext) _Story_kids(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]int)
+	res := resTmp.([]int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2ᚕint(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚕint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -1901,6 +1972,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "story":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_story(ctx, field)
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -1918,7 +2000,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var storyImplementors = []string{"Story"}
 
-func (ec *executionContext) _Story(ctx context.Context, sel ast.SelectionSet, obj *Story) graphql.Marshaler {
+func (ec *executionContext) _Story(ctx context.Context, sel ast.SelectionSet, obj *models.Story) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, storyImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -2242,12 +2324,12 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	return graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalIntID(v)
 }
 
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
+func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalIntID(v)
 	if res == graphql.Null {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2256,7 +2338,21 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2ᚕint(ctx context.Context, v interface{}) ([]int, error) {
+func (ec *executionContext) unmarshalNInt2int64(ctx context.Context, v interface{}) (int64, error) {
+	return graphql.UnmarshalInt64(v)
+}
+
+func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	res := graphql.MarshalInt64(v)
+	if res == graphql.Null {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2ᚕint64(ctx context.Context, v interface{}) ([]int64, error) {
 	var vSlice []interface{}
 	if v != nil {
 		if tmp1, ok := v.([]interface{}); ok {
@@ -2266,9 +2362,9 @@ func (ec *executionContext) unmarshalNInt2ᚕint(ctx context.Context, v interfac
 		}
 	}
 	var err error
-	res := make([]int, len(vSlice))
+	res := make([]int64, len(vSlice))
 	for i := range vSlice {
-		res[i], err = ec.unmarshalNInt2int(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNInt2int64(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -2276,20 +2372,20 @@ func (ec *executionContext) unmarshalNInt2ᚕint(ctx context.Context, v interfac
 	return res, nil
 }
 
-func (ec *executionContext) marshalNInt2ᚕint(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
+func (ec *executionContext) marshalNInt2ᚕint64(ctx context.Context, sel ast.SelectionSet, v []int64) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNInt2int(ctx, sel, v[i])
+		ret[i] = ec.marshalNInt2int64(ctx, sel, v[i])
 	}
 
 	return ret
 }
 
-func (ec *executionContext) marshalNStory2githubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚐStory(ctx context.Context, sel ast.SelectionSet, v Story) graphql.Marshaler {
+func (ec *executionContext) marshalNStory2githubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v models.Story) graphql.Marshaler {
 	return ec._Story(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚐStory(ctx context.Context, sel ast.SelectionSet, v []*Story) graphql.Marshaler {
+func (ec *executionContext) marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v []*models.Story) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2313,7 +2409,7 @@ func (ec *executionContext) marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhack
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚐStory(ctx, sel, v[i])
+			ret[i] = ec.marshalNStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2326,7 +2422,7 @@ func (ec *executionContext) marshalNStory2ᚕᚖgithubᚗcomᚋadwdᚋtilᚋhack
 	return ret
 }
 
-func (ec *executionContext) marshalNStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚐStory(ctx context.Context, sel ast.SelectionSet, v *Story) graphql.Marshaler {
+func (ec *executionContext) marshalNStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v *models.Story) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2597,6 +2693,17 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOStory2githubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v models.Story) graphql.Marshaler {
+	return ec._Story(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOStory2ᚖgithubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v *models.Story) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Story(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

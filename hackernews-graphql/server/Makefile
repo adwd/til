@@ -16,4 +16,5 @@ gen:
 
 .PHONY: quicktype
 quicktype:
-	quicktype https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty --lang go --package types -o types/top_stories.go
+	quicktype https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty --lang go --package models -o models/top_stories.go
+	quicktype https://hacker-news.firebaseio.com/v0/item/8863.json?print=pretty --lang go --package models -o models/story.go

@@ -12,4 +12,5 @@ type Story {
 
 type Query {
   stories: [Story!]!
+  story(id: ID!): Story
 }

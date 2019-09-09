@@ -4,7 +4,7 @@
 //    topStories, err := UnmarshalTopStories(bytes)
 //    bytes, err = topStories.Marshal()
 
-package types
+package models
 
 import "encoding/json"
 
