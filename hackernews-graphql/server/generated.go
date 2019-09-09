@@ -43,7 +43,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Query struct {
-		Stories func(childComplexity int) int
+		Stories func(childComplexity int, limit *int) int
 		Story   func(childComplexity int, id int) int
 	}
 
@@ -61,7 +61,7 @@ type ComplexityRoot struct {
 }
 
 type QueryResolver interface {
-	Stories(ctx context.Context) ([]*models.Story, error)
+	Stories(ctx context.Context, limit *int) ([]*models.Story, error)
 	Story(ctx context.Context, id int) (*models.Story, error)
 }
 
@@ -85,7 +85,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.Stories(childComplexity), true
+		args, err := ec.field_Query_stories_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Stories(childComplexity, args["limit"].(*int)), true
 
 	case "Query.story":
 		if e.complexity.Query.Story == nil {
@@ -224,7 +229,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 }
 
 type Query {
-  stories: [Story!]!
+  stories(limit: Int): [Story!]!
   story(id: ID!): Story
 }
 `},
@@ -245,6 +250,20 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_stories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg0
 	return args, nil
 }
 
@@ -314,10 +333,17 @@ func (ec *executionContext) _Query_stories(ctx context.Context, field graphql.Co
 		IsMethod: true,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_stories_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Stories(rctx)
+		return ec.resolvers.Query().Stories(rctx, args["limit"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2693,6 +2719,29 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	return graphql.MarshalInt(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int(ctx, sel, *v)
 }
 
 func (ec *executionContext) marshalOStory2githubᚗcomᚋadwdᚋtilᚋhackernewsᚑgraphqlᚋserverᚋmodelsᚐStory(ctx context.Context, sel ast.SelectionSet, v models.Story) graphql.Marshaler {

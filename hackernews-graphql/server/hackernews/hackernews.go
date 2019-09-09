@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 
 	"github.com/adwd/til/hackernews-graphql/server/models"
+	"golang.org/x/sync/errgroup"
 )
 
 // GetTopStories get top stories
-func GetTopStories(ctx context.Context) ([]*models.Story, error) {
+func GetTopStories(ctx context.Context, limit *int) ([]*models.Story, error) {
+	if limit == nil {
+		*limit = 50
+	}
 	res, err := http.Get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
 	if err != nil {
 		return []*models.Story{}, err
@@ -22,19 +27,39 @@ func GetTopStories(ctx context.Context) ([]*models.Story, error) {
 	}
 	defer res.Body.Close()
 
-	stories, err := models.UnmarshalTopStories(body)
+	storyIds, err := models.UnmarshalTopStories(body)
 	if err != nil {
 		return []*models.Story{}, err
 	}
+	length := *limit
+	if len(storyIds) < *limit {
+		length = len(storyIds)
+	}
 
-	result := []*models.Story{}
-	for _, s := range stories {
-		result = append(result, &models.Story{
-			ID: s,
+	var m sync.Mutex
+	stories := []*models.Story{}
+	eg, ctx := errgroup.WithContext(ctx)
+	for index, s := range storyIds {
+		if index > length {
+			break
+		}
+		id := s
+		eg.Go(func() error {
+			story, err := GetStory(ctx, int(id))
+			if story != nil {
+				m.Lock()
+				stories = append(stories, story)
+				m.Unlock()
+			}
+			return err
 		})
 	}
 
-	return result, nil
+	if err = eg.Wait(); err != nil {
+		return []*models.Story{}, err
+	}
+
+	return stories, nil
 }
 
 // GetStory get story
