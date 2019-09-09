@@ -1,0 +1,16 @@
+type Story {
+  by: String!
+  descendants: Int!
+  id: Int!
+  score: Int!
+  time: Int!
+  title: String!
+  type: String!
+  url: String!
+  kids: [Int!]!
+}
+
+type Query {
+  stories: [Story!]!
+  story(id: ID!): Story
+}
