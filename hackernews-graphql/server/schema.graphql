@@ -11,6 +11,6 @@ type Story {
 }
 
 type Query {
-  stories: [Story!]!
+  stories(limit: Int): [Story!]!
   story(id: ID!): Story
 }

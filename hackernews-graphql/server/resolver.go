@@ -17,8 +17,8 @@ func (r *Resolver) Query() QueryResolver {
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Stories(ctx context.Context) ([]*models.Story, error) {
-	return hackernews.GetTopStories(ctx)
+func (r *queryResolver) Stories(ctx context.Context, limit *int) ([]*models.Story, error) {
+	return hackernews.GetTopStories(ctx, limit)
 }
 
 func (r *queryResolver) Story(ctx context.Context, id int) (*models.Story, error) {
