@@ -17,6 +17,9 @@ autobind: []
 models:
   Story:
     model: github.com/adwd/til/hackernews-graphql/server/models.Story
+    fields:
+      ogpImage:
+        resolver: true
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.IntID

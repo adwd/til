@@ -81,19 +81,11 @@ func GetStory(ctx context.Context, id int) (*models.Story, error) {
 		return nil, err
 	}
 
-	ogp, err := getOGPImage(story.URL)
-	if err != nil {
-		return nil, err
-	}
-
-	if ogp != nil {
-		story.OGPImage = *ogp
-	}
-
 	return &story, nil
 }
 
-func getOGPImage(url string) (*string, error) {
+// GetOGPImage gets ogp image
+func GetOGPImage(url string) (*string, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
