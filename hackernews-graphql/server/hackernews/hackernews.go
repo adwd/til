@@ -131,3 +131,18 @@ func GetComment(ctx context.Context, id int) (*models.Comment, error) {
 
 	return &comment, nil
 }
+
+// GetComments gets comments
+func GetComments(ctx context.Context, ids []int) ([]*models.Comment, error) {
+	comments := []*models.Comment{}
+
+	for _, id := range ids {
+		comment, err := GetComment(ctx, id)
+		if err != nil {
+			return comments, err
+		}
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}

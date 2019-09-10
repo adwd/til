@@ -8,7 +8,7 @@ type Story {
   type: String!
   url: String!
   ogpImage: String
-  kids: [Int!]!
+  kids: [Comment!]!
 }
 
 type Comment {
@@ -18,7 +18,7 @@ type Comment {
   text: String!
   time: Int!
   type: String!
-  kids: [Int!]!
+  kids: [Comment!]!
 }
 
 type Query {

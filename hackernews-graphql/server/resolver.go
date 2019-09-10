@@ -1,7 +1,5 @@
 package server
 
-//go:generate go run github.com/99designs/gqlgen
-
 import (
 	"context"
 
@@ -13,11 +11,27 @@ import (
 
 type Resolver struct{}
 
+func (r *Resolver) Comment() CommentResolver {
+	return &commentResolver{r}
+}
 func (r *Resolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
 func (r *Resolver) Story() StoryResolver {
 	return &storyResolver{r}
+}
+
+type commentResolver struct{ *Resolver }
+
+func (r *commentResolver) Kids(ctx context.Context, obj *models.Comment) ([]*models.Comment, error) {
+	if obj == nil || len(obj.Kids) == 0 {
+		return []*models.Comment{}, nil
+	}
+	ids := []int{}
+	for _, id := range obj.Kids {
+		ids = append(ids, int(id))
+	}
+	return hackernews.GetComments(ctx, ids)
 }
 
 type queryResolver struct{ *Resolver }
@@ -41,4 +55,15 @@ func (r *storyResolver) OgpImage(ctx context.Context, obj *models.Story) (*strin
 		return hackernews.GetOGPImage(obj.URL)
 	}
 	return nil, nil
+}
+
+func (r *storyResolver) Kids(ctx context.Context, obj *models.Story) ([]*models.Comment, error) {
+	if obj == nil || len(obj.Kids) == 0 {
+		return []*models.Comment{}, nil
+	}
+	ids := []int{}
+	for _, id := range obj.Kids {
+		ids = append(ids, int(id))
+	}
+	return hackernews.GetComments(ctx, ids)
 }
