@@ -52,6 +52,7 @@ type ComplexityRoot struct {
 		Descendants func(childComplexity int) int
 		ID          func(childComplexity int) int
 		Kids        func(childComplexity int) int
+		OGPImage    func(childComplexity int) int
 		Score       func(childComplexity int) int
 		Time        func(childComplexity int) int
 		Title       func(childComplexity int) int
@@ -131,6 +132,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Story.Kids(childComplexity), true
+
+	case "Story.ogpImage":
+		if e.complexity.Story.OGPImage == nil {
+			break
+		}
+
+		return e.complexity.Story.OGPImage(childComplexity), true
 
 	case "Story.score":
 		if e.complexity.Story.Score == nil {
@@ -225,6 +233,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
   title: String!
   type: String!
   url: String!
+  ogpImage: String
   kids: [Int!]!
 }
 
@@ -771,6 +780,40 @@ func (ec *executionContext) _Story_url(ctx context.Context, field graphql.Collec
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Story_ogpImage(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Story",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OGPImage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Story_kids(ctx context.Context, field graphql.CollectedField, obj *models.Story) (ret graphql.Marshaler) {
@@ -2075,6 +2118,8 @@ func (ec *executionContext) _Story(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "ogpImage":
+			out.Values[i] = ec._Story_ogpImage(ctx, field, obj)
 		case "kids":
 			out.Values[i] = ec._Story_kids(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
