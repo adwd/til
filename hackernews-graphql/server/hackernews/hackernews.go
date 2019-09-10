@@ -131,3 +131,41 @@ func GetComment(ctx context.Context, id int) (*models.Comment, error) {
 
 	return &comment, nil
 }
+
+// GetComments gets comments
+func GetComments(ctx context.Context, ids []int) ([]*models.Comment, error) {
+	eg, ctx := errgroup.WithContext(ctx)
+	commentChan := make(chan *models.Comment)
+
+	for _, id := range ids {
+		id = id
+		eg.Go(func() error {
+			comment, err := GetComment(ctx, id)
+			if err != nil {
+				return err
+			}
+			select {
+			case commentChan <- comment:
+				return nil
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		})
+	}
+
+	go func() {
+		eg.Wait()
+		close(commentChan)
+	}()
+
+	comments := []*models.Comment{}
+	for comment := range commentChan {
+		comments = append(comments, comment)
+	}
+
+	if err := eg.Wait(); err != nil {
+		return []*models.Comment{}, err
+	}
+
+	return comments, nil
+}
