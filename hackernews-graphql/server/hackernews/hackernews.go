@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/adwd/til/hackernews-graphql/server/models"
 	"golang.org/x/sync/errgroup"
 )
@@ -80,5 +81,41 @@ func GetStory(ctx context.Context, id int) (*models.Story, error) {
 		return nil, err
 	}
 
+	ogp, err := getOGPImage(story.URL)
+	if err != nil {
+		return nil, err
+	}
+
+	if ogp != nil {
+		story.OGPImage = *ogp
+	}
+
 	return &story, nil
+}
+
+func getOGPImage(url string) (*string, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	urls := []string{}
+	doc.Find(`meta[property="og:image"]`).Each(func(i int, s *goquery.Selection) {
+		content, ok := s.Attr("content")
+		if ok {
+			urls = append(urls, content)
+		}
+	})
+
+	if len(urls) < 1 {
+		return nil, nil
+	}
+
+	return &urls[0], nil
 }
