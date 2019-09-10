@@ -30,6 +30,10 @@ func (r *queryResolver) Story(ctx context.Context, id int) (*models.Story, error
 	return hackernews.GetStory(ctx, id)
 }
 
+func (r *queryResolver) Comment(ctx context.Context, id int) (*models.Comment, error) {
+	return hackernews.GetComment(ctx, id)
+}
+
 type storyResolver struct{ *Resolver }
 
 func (r *storyResolver) OgpImage(ctx context.Context, obj *models.Story) (*string, error) {

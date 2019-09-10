@@ -11,7 +11,18 @@ type Story {
   kids: [Int!]!
 }
 
+type Comment {
+  by: String!
+  id: Int!
+  parent: Int!
+  text: String!
+  time: Int!
+  type: String!
+  kids: [Int!]!
+}
+
 type Query {
   stories(limit: Int): [Story!]!
   story(id: ID!): Story
+  comment(id: ID!): Comment
 }

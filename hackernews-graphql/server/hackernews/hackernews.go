@@ -111,3 +111,23 @@ func GetOGPImage(url string) (*string, error) {
 
 	return &urls[0], nil
 }
+
+func GetComment(ctx context.Context, id int) (*models.Comment, error) {
+	res, err := http.Get(fmt.Sprintf("https://hacker-news.firebaseio.com/v0/item/%d.json?print=pretty", id))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	comment, err := models.UnmarshalComment(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return &comment, nil
+}
