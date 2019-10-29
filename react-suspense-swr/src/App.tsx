@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import useSWR from '@zeit/swr';
 
 const App = () => {
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <Todos />
+    </Suspense>
+  );
+};
+
+const Todos = () => {
   const { data, error } = useSWR(
     'https://jsonplaceholder.typicode.com/todos',
     (req: any) => fetch(req).then(res => res.json()),
