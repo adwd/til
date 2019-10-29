@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import useSWR from '@zeit/swr';
 
-const App: React.FC = () => {
+const App = () => {
+  const { data, error } = useSWR(
+    'https://jsonplaceholder.typicode.com/todos',
+    (req: any) => fetch(req).then(res => res.json()),
+  );
+
+  if (error) {
+    return (
+      <div>
+        <pre>
+          <code>{JSON.stringify(error, null, 2)}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return <div>loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <pre>
+        <code>{JSON.stringify(data, null, 2)}</code>
+      </pre>
     </div>
   );
-}
+};
 
 export default App;

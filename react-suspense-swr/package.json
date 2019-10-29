@@ -7,6 +7,7 @@
     "@types/node": "12.11.7",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.3",
+    "@zeit/swr": "0.0.3",
     "react": "0.0.0-experimental-f6b8d31a7",
     "react-dom": "0.0.0-experimental-f6b8d31a7",
     "react-scripts": "3.2.0",
