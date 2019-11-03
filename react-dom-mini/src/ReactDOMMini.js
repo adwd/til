@@ -19,6 +19,10 @@ let reconciler = ReactReconciler({
       el.addEventListener('click', props.onClick);
     }
 
+    if (props.myBackGroundColor) {
+      el.style.backgroundColor = props.myBackGroundColor;
+    }
+
     return el;
   },
 
@@ -89,7 +93,14 @@ let reconciler = ReactReconciler({
     newProps: Props,
     rootContainerInstance: Container,
     hostContext: HostContext,
-  ): null | Array<mixed> { },
+  ): null | Array<mixed> {
+    let payload;
+    if (oldProps.myBackGroundColor !== newProps.myBackGroundColor) {
+      payload = { newMyBackGroundColor: newProps.myBackGroundColor };
+    }
+
+    return payload;
+  },
 
   commitUpdate(
     domElement: Instance,
@@ -98,7 +109,11 @@ let reconciler = ReactReconciler({
     oldProps: Props,
     newProps: Props,
     internalInstanceHandle: Object,
-  ): void { },
+  ): void {
+    if (updatePayload.newMyBackGroundColor) {
+      domElement.style.backgroundColor = updatePayload.newMyBackGroundColor;
+    }
+  },
 
   finalizeInitialChildren(
     domElement: Instance,
