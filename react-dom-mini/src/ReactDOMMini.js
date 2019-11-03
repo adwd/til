@@ -15,6 +15,10 @@ let reconciler = ReactReconciler({
       if (props[k]) el[k] = props[k];
     });
 
+    if (props.onClick) {
+      el.addEventListener('click', props.onClick);
+    }
+
     return el;
   },
 
@@ -46,6 +50,36 @@ let reconciler = ReactReconciler({
     child: Instance | TextInstance,
   ): void {
     parentInstance.appendChild(child);
+  },
+
+  removeChild(
+    parentInstance: Instance,
+    child: Instance | TextInstance | SuspenseInstance,
+  ): void {
+    parentInstance.removeChild(child);
+  },
+
+  removeChildFromContainer(
+    container: Container,
+    child: Instance | TextInstance | SuspenseInstance,
+  ): void {
+    container.removeChild(child);
+  },
+
+  insertInContainerBefore(
+    container: Container,
+    child: Instance | TextInstance,
+    beforeChild: Instance | TextInstance | SuspenseInstance,
+  ): void {
+    container.insertBefore(child, beforeChild);
+  },
+
+  insertBefore(
+    parentInstance: Instance,
+    child: Instance | TextInstance,
+    beforeChild: Instance | TextInstance | SuspenseInstance,
+  ): void {
+    parentInstance.insertBefore(child, beforeChild);
   },
 
   prepareUpdate(

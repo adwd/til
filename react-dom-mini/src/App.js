@@ -3,10 +3,11 @@ import logo from './logo.svg';
 import './App.css';
 
 const App: React.FC = () => {
+  const [showLogo, setShowLogo] = React.useState(true);
   return (
-    <div className="App">
+    <div className="App" onClick={() => setShowLogo(show => !show)}>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        {showLogo && <img src={logo} className="App-logo" alt="logo" />}
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
