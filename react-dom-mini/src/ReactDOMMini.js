@@ -11,7 +11,7 @@ let reconciler = ReactReconciler({
     internalInstanceHandle: Object,
   ): Instance {
     const el = document.createElement(type);
-    ['className', 'src'].forEach(k => {
+    ['alt', 'className', 'href', 'rel', 'src', 'target'].forEach(k => {
       if (props[k]) el[k] = props[k];
     });
 
@@ -24,7 +24,6 @@ let reconciler = ReactReconciler({
     hostContext: HostContext,
     internalInstanceHandle: Object,
   ): TextInstance {
-    // <div> Hello :) </div>
     return document.createTextNode(text);
   },
 
@@ -93,7 +92,7 @@ let reconciler = ReactReconciler({
 });
 
 let ReactDOMMini = {
-  render(whatToRender: any, div: any) {
+  render(whatToRender, div) {
     const container = reconciler.createContainer(div, false, false);
     reconciler.updateContainer(whatToRender, container, null, null);
   },
