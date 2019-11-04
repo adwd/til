@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "flow-bin": "^0.111.1",
     "react": "0.0.0-experimental-f6b8d31a7",
     "react-dom": "0.0.0-experimental-f6b8d31a7",
     "react-scripts": "3.2.0"
@@ -12,7 +13,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "get-schema": "graphql get-schema -e default"
+    "get-schema": "graphql get-schema -e default",
+    "flow": "flow"
   },
   "eslintConfig": {
     "extends": "react-app"
