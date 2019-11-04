@@ -1,0 +1,4 @@
+schemaPath: ./schema.graphql
+extensions:
+  endpoints:
+    default: 'https://api.spacex.land/graphql/'
