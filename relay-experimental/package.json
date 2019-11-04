@@ -1,0 +1,46 @@
+{
+  "name": "relay-experimental",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "flow-bin": "^0.111.1",
+    "react": "0.0.0-experimental-f6b8d31a7",
+    "react-dom": "0.0.0-experimental-f6b8d31a7",
+    "react-relay": "0.0.0-experimental-a1a40b68",
+    "react-scripts": "3.2.0",
+    "relay-runtime": "^7.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "get-schema": "graphql get-schema -e default",
+    "flow": "flow",
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^7.0.0",
+    "graphql-cli": "^3.0.14",
+    "relay-compiler": "^7.0.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}
