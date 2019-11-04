@@ -1,26 +1,17 @@
 // @flow
 import React from 'react';
-import logo from './logo.svg';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import './App.css';
+import { environment } from './relay/environment';
+import Launches from './components/Launches';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RelayEnvironmentProvider environment={environment}>
+      <React.Suspense fallback={<div>loading...</div>}>
+        <Launches />
+      </React.Suspense>
+    </RelayEnvironmentProvider>
   );
 }
 

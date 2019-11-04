@@ -6,7 +6,9 @@
     "flow-bin": "^0.111.1",
     "react": "0.0.0-experimental-f6b8d31a7",
     "react-dom": "0.0.0-experimental-f6b8d31a7",
-    "react-scripts": "3.2.0"
+    "react-relay": "0.0.0-experimental-a1a40b68",
+    "react-scripts": "3.2.0",
+    "relay-runtime": "^7.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -14,7 +16,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "get-schema": "graphql get-schema -e default",
-    "flow": "flow"
+    "flow": "flow",
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,6 +35,12 @@
     ]
   },
   "devDependencies": {
-    "graphql-cli": "^3.0.14"
+    "babel-plugin-relay": "^7.0.0",
+    "graphql-cli": "^3.0.14",
+    "relay-compiler": "^7.0.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }
