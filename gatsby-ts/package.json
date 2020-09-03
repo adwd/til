@@ -42,7 +42,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "gatsby-plugin-typescript": "^2.0.0",
-    "graphql-code-generator": "^0.12.6",
+    "graphql-code-generator": "^0.18.2",
     "graphql-codegen-typescript-template": "^0.12.6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
