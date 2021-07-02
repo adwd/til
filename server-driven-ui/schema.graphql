@@ -1,0 +1,120 @@
+# https://medium.com/airbnb-engineering/a-deep-dive-into-airbnbs-server-driven-ui-system-842244c5f5
+
+interface GPResponse {
+  sections: [SectionContainer]
+  screens: [ScreenContainer]
+  
+  # ... Other metadata, logging data or feature-specific logic
+}
+
+# Example sections
+type HeroSection {
+  # Image urls
+  images: [String]!
+}
+
+type TitleSection {
+  title: String!,
+  titleStyle: TextStyle!
+  
+  # Optional subtitle
+  subtitle: String
+  subtitleStyle: TextStyle
+  
+  # Action to be taken when tapping the optional subtitle
+  onSubtitleClickAction: IAction
+}
+
+enum SectionComponentType {
+  HERO,
+  TITLE,
+  PLUS_TITLE,
+  
+  # ... There's alot of these :)
+}
+
+union Section = HeroSection
+  | TitleSection
+  | # ... More section data models
+  
+# The wrapper that wraps each section. Responsible for metadata, logging data and SectionComponentType
+type SectionContainer {
+  id: String!
+  
+  # The key that determines how to render the section data model
+  sectionComponentType: SectionComponentType
+  
+  # The data for this specific section
+  section: Section
+  
+  # ... Metadata, logging data & more
+}
+
+type ScreenContainer {
+  id: String
+  
+  # Properties such as how to launch this screen (popup, sheet, etc.)
+  screenProperties: ScreenProperties
+  
+  layout: LayoutsPerFormFactor
+}
+
+# Specifies the ILayout type depending on rotation, client screen density, etc.
+type LayoutsPerFormFactor {
+  
+  # Compact is usually used for portrait breakpoints (i.e. mobile phones)
+  compact: ILayout
+  
+  # Wide is usually used for landscape breakpoints (i.e. web browsers, tablets)
+  wide: ILayout
+}
+
+interface ILayout {}
+
+type SectionDetail {
+  # References a SectionContainer in the GPResponse.sections array
+  sectionId: String
+  
+  # Styling data
+  topPadding: Int
+  bottomPadding: Int
+  
+  # ... Other styling data (margins, borders, etc)
+}
+
+# A placement meat to display a single GP section
+type SingleSectionPlacement {
+  sectionDetail: SectionDetail!
+}
+
+# A placement meat to display multiple GP sections in the order they appear in the sectionDetails array
+type MultipleSectionsPlacement {
+  sectionDetails: [SectionDetail]!
+}
+
+# A layout implementation defines the placements that sections are inserted into.
+type SingleColumnLayout implements ILayout {
+  
+  nav: SingleSectionPlacement
+  
+  main: MultipleSectionsPlacement
+  
+  floatingFooter: SingleSectionPlacement
+}
+
+interface IAction {}
+
+# A simple action that will navigate the user to the screen matching the screenId when invoked
+type NavigateToScreen implements IAction {
+  screenId: String
+}
+
+# A sample TitleSection using an IAction type to handle the click of the subtitle
+type TitleSection {
+  ...
+  
+  subtitle: String
+  
+  # Action to be taken when tapping the subtitle
+  onSubtitleClickAction: IAction
+}
