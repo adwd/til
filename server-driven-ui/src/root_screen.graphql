@@ -1,0 +1,71 @@
+query RootScreen {
+  rootScreen {
+    sections {
+      id
+      sectionComponentType
+      section {
+        __typename
+        ... on HeroSection {
+          images
+        }
+        ... on TitleSection {
+          title
+          subtitle
+          onSubtitleClickAction {
+            ...ActionFragment
+          }
+        }
+        ... on ToolbarSection {
+          onClickAction {
+            ...ActionFragment
+          }
+        }
+        ... on ButtonSection {
+          text
+          onClickAction {
+            ...ActionFragment
+          }
+        }
+      }
+    }
+    screens {
+      id
+      layout {
+        compact {
+          __typename
+          ... on SingleColumnLayout {
+            name
+            nav {
+              sectionDetail {
+                ...SectionDetailFragment
+              }
+            }
+            main {
+              sectionDetails {
+                ...SectionDetailFragment
+              }
+            }
+            floatingFooter {
+              sectionDetail {
+                ...SectionDetailFragment
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment SectionDetailFragment on SectionDetail {
+  sectionId
+  topPadding
+  bottomPadding
+}
+
+fragment ActionFragment on IAction {
+  ... on NavigateToScreen {
+    name
+    screenId
+  }
+}
