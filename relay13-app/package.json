@@ -4,17 +4,25 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "relay": "relay-compiler"
   },
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.0.0-rc.0",
+    "react-dom": "^18.0.0-rc.0",
+    "react-relay": "^13.0.0",
+    "relay-runtime": "^13.0.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
+    "@types/react-relay": "^11.0.3",
+    "@types/relay-runtime": "^12.0.1",
     "@vitejs/plugin-react": "^1.0.7",
+    "get-graphql-schema": "^2.1.2",
+    "relay-compiler": "^13.0.0",
     "typescript": "^4.4.4",
-    "vite": "^2.7.2"
+    "vite": "^2.7.2",
+    "vite-plugin-relay": "^1.0.7"
   }
 }

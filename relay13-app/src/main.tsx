@@ -1,11 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { Suspense } from 'react'
+import { createRoot } from 'react-dom'
 import './index.css'
 import App from './App'
+import { RelayEnvironmentProvider } from 'react-relay/hooks'
+import { relayEnvironment } from './graphql/relay'
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root')!)
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <RelayEnvironmentProvider environment={relayEnvironment}>
+      <Suspense fallback={'Loading...'}>
+        <App />
+      </Suspense>
+    </RelayEnvironmentProvider>
+  </React.StrictMode>
 )
