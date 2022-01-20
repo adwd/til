@@ -1,9 +1,16 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import logo from './logo.svg'
 import './App.css'
+import init, { gen_rand_num, add } from '../wasm/pkg'
 
 function App() {
-  const [count, setCount] = useState(0)
+  console.log(gen_rand_num, add)
+
+  useEffect(() => {
+    init().then(({ add }) => {
+      console.log(add(1, 2))
+    })
+  }, [])
 
   return (
     <div className="App">
@@ -11,8 +18,8 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
         <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
+          <button type="button" onClick={() => gen_rand_num()}>
+            click
           </button>
         </p>
         <p>
