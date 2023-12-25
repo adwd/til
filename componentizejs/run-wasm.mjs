@@ -1,1 +1,3 @@
-import('./hello/hello.component.js').then((m) => console.log(m.hello('ComponentizeJS')));
+// @ts-check
+import { hello } from './hello/hello.component.js';
+console.log(hello('ComponentizeJS'));
