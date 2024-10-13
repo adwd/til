@@ -1,6 +1,10 @@
-package component:greet;
+package adwd:greet;
 
-/// An example world for the component to target.
-world example {
-    export hello-world: func() -> string;
+interface greetable {
+    name: func() -> string;
+    greet: func(name: string) -> string;
+}
+
+world greetable-provider {
+    export greetable;
 }

@@ -1,14 +1,17 @@
 #[allow(warnings)]
 mod bindings;
 
-use bindings::Guest;
+use crate::bindings::exports::adwd::greet::greetable::Guest;
 
 struct Component;
 
 impl Guest for Component {
-    /// Say hello!
-    fn hello_world() -> String {
-        "Hello, World!".to_string()
+    fn name() -> String {
+        "Wasm Component".to_string()
+    }
+
+    fn greet(name: String) -> String {
+        format!("Hello, {}!", name)
     }
 }
 
