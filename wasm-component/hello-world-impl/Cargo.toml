@@ -1,5 +1,5 @@
 [package]
-name = "greet"
+name = "hello-world-impl"
 version = "0.1.0"
 edition = "2021"
 
@@ -17,9 +17,10 @@ strip = true
 lto = true
 
 [package.metadata.component]
-package = "adwd:greet-impl"
-
-[package.metadata.component.target]
-world = "greetable-provider"
+package = "component:hello-world-impl"
 
 [package.metadata.component.dependencies]
+
+[package.metadata.component.target]
+path = "../greet/wit"
+world = "hello-world"
