@@ -16,3 +16,15 @@ allowed_outbound_hosts = []
 [component.hello-world-with-spin.build]
 command = "cargo build --target wasm32-wasip1 --release"
 watch = ["src/**/*.rs", "Cargo.toml"]
+
+[[trigger.http]]
+route = "/echo/..."
+component = "echo"
+
+[component.echo]
+source = "echo/target/wasm32-wasip1/release/echo.wasm"
+allowed_outbound_hosts = []
+[component.echo.build]
+command = "cargo build --target wasm32-wasip1 --release"
+workdir = "echo"
+watch = ["src/**/*.rs", "Cargo.toml"]
