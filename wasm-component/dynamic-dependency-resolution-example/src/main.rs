@@ -5,14 +5,33 @@ use wasmtime::{
 };
 
 use adwd::greet::greetable::Host;
+use wasmtime_wasi::{ResourceTable, WasiCtx, WasiCtxBuilder, WasiView};
 
 struct Greet {
     name: String,
+    wasi_ctx: WasiCtx,
+    resource_table: ResourceTable,
 }
 
 impl Greet {
     fn new(name: String) -> Self {
-        Self { name }
+        let wasi_ctx = WasiCtxBuilder::new().build();
+        let resource_table = ResourceTable::new();
+        Self {
+            name,
+            wasi_ctx,
+            resource_table,
+        }
+    }
+}
+
+impl WasiView for Greet {
+    fn table(&mut self) -> &mut ResourceTable {
+        &mut self.resource_table
+    }
+
+    fn ctx(&mut self) -> &mut WasiCtx {
+        &mut self.wasi_ctx
     }
 }
 
@@ -52,6 +71,7 @@ fn start(cli: Cli) -> anyhow::Result<()> {
     let component = Component::from_file(&engine, &cli.wasm_file)?;
 
     HelloWorld::add_to_linker(&mut linker, |greet: &mut Greet| greet)?;
+    wasmtime_wasi::add_to_linker_sync(&mut linker)?;
     let hello_world = HelloWorld::instantiate(&mut store, &component, &linker)?;
 
     let message = hello_world.adwd_greet_sayable().call_say(&mut store)?;
