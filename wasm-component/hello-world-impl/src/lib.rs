@@ -9,7 +9,10 @@ struct Component;
 impl Guest for Component {
     fn say() -> String {
         let name = name();
-        greet(&name)
+        let greetings = greet(&name);
+        let mut buffer = Vec::new();
+        ferris_says::say(&greetings, 80, &mut buffer).unwrap();
+        String::from_utf8(buffer).unwrap()
     }
 }
 
