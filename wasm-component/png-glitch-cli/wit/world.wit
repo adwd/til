@@ -1,0 +1,26 @@
+package adwd:glitch-art;
+
+interface png-glitchable {
+    enum filter-type {
+        none,
+        sub,
+        up,
+        average,
+        paeth,
+    }
+
+    record scan-line {
+        filter-type: filter-type,
+        pixel-data: list<u8>,
+    }
+
+    glitch: func(scan-line: scan-line) -> scan-line;
+}
+
+world png-glitcher {
+    export png-glitchable;
+}
+
+world png-glicth-cli {
+    import png-glitchable;
+}
