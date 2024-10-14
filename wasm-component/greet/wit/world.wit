@@ -1,0 +1,19 @@
+package adwd:greet;
+
+interface greetable {
+    name: func() -> string;
+    greet: func(name: string) -> string;
+}
+
+world greetable-provider {
+    export greetable;
+}
+
+interface sayable {
+    say: func() -> string;
+}
+
+world hello-world {
+    import greetable;
+    export sayable;
+}
