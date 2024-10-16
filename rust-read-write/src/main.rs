@@ -1,9 +1,11 @@
+use std::io::{self, prelude::*, stdout, BufReader, BufWriter};
 use std::{fs::File, io::Read, io::Write};
 
 fn main() {
     reader_writer().unwrap();
 }
 
+// https://doc.rust-lang.org/std/io/index.html
 fn reader_writer() -> anyhow::Result<()> {
     println!("Read");
     {
@@ -13,9 +15,52 @@ fn reader_writer() -> anyhow::Result<()> {
 
     println!("Write");
     {
-        let mut f = std::io::stdout();
+        let mut f = stdout();
         let buf = b"Hello, world!\n";
         write(&mut f, buf)?;
+    }
+
+    println!("BufReader");
+    {
+        let f = File::open("test.txt")?;
+        let reader = BufReader::new(f);
+        for line in reader.lines() {
+            println!("{}", line?);
+        }
+    }
+    {
+        let f = File::open("test.txt")?;
+        let mut reader = BufReader::new(f);
+        loop {
+            let mut buffer = String::new();
+            let n = reader.read_line(&mut buffer)?;
+            if n == 0 {
+                break;
+            }
+            print!("{}", buffer);
+        }
+    }
+
+    println!("BufReader as Read");
+    {
+        let f = File::open("test.txt")?;
+        let mut reader = BufReader::new(f);
+        read(&mut reader)?;
+    }
+
+    println!("BufWriter");
+    {
+        let f = stdout();
+        let mut writer = BufWriter::new(f);
+        let buf = b"Hello, world!\n";
+        write(&mut writer, buf)?;
+    }
+
+    println!("copy");
+    {
+        let mut f = File::open("test.txt")?;
+        let mut out = stdout();
+        io::copy(&mut f, &mut out)?;
     }
 
     Ok(())
