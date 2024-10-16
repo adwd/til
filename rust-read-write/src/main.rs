@@ -1,8 +1,13 @@
 use std::io::{self, prelude::*, stdout, BufReader, BufWriter};
 use std::{fs::File, io::Read, io::Write};
 
-fn main() {
+use async_read_write::async_read_write;
+mod async_read_write;
+
+#[tokio::main]
+async fn main() {
     reader_writer().unwrap();
+    async_read_write().await.unwrap();
 }
 
 // https://doc.rust-lang.org/std/io/index.html
